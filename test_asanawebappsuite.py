@@ -25,43 +25,53 @@ class TestAsanawebappsuite():
     self.driver.get("https://app.asana.com/-/login")
     # 2 | setWindowSize | 1458x920 |  | 
     self.driver.set_window_size(1458, 920)
-    # 3 | click | css=.ThemeableRectangularButtonPresentation--xlarge |  | 
+    # 3 | waitForElementPresent | css=.ThemeableRectangularButtonPresentation--xlarge | 3000 | 
+    WebDriverWait(self.driver, 3).until(expected_conditions.presence_of_element_located((By.CSS_SELECTOR, ".ThemeableRectangularButtonPresentation--xlarge")))
+    # 4 | click | css=.ThemeableRectangularButtonPresentation--xlarge |  | 
     self.driver.find_element(By.CSS_SELECTOR, ".ThemeableRectangularButtonPresentation--xlarge").click()
-    # 4 | click | css=.w1I7fb |  | 
+    # 5 | waitForElementPresent | css=.w1I7fb | 3000 | 
+    WebDriverWait(self.driver, 3).until(expected_conditions.presence_of_element_located((By.CSS_SELECTOR, ".w1I7fb")))
+    # 6 | click | css=.w1I7fb |  | 
     self.driver.find_element(By.CSS_SELECTOR, ".w1I7fb").click()
-    # 5 | assertElementPresent | xpath=//span/div/div |  | 
+    # 7 | waitForElementVisible | xpath=//main[@id='asana_main_page']/div/div/div[2]/div/span[2] | 30000 | 
+    WebDriverWait(self.driver, 30).until(expected_conditions.visibility_of_element_located((By.XPATH, "//main[@id=\'asana_main_page\']/div/div/div[2]/div/span[2]")))
+    # 8 | assertElementPresent | xpath=//span/div/div |  | 
     elements = self.driver.find_elements(By.XPATH, "//span/div/div")
     assert len(elements) > 0
   
   def test_createproject(self):
     # Test name: create project
     # Step # | name | target | value | comment
-    # 1 | open | /0/home/1205724578603564 |  | 
-    self.driver.get("https://app.asana.com/0/home/1205724578603564")
+    # 1 | open | https://app.asana.com |  | 
+    self.driver.get("https://app.asana.com")
     # 2 | setWindowSize | 1457x918 |  | 
     self.driver.set_window_size(1457, 918)
-    # 3 | mouseOver | css=.SidebarTopNavLinks-goalsButton > .TypographyPresentation |  | 
-    element = self.driver.find_element(By.CSS_SELECTOR, ".SidebarTopNavLinks-goalsButton > .TypographyPresentation")
-    actions = ActionChains(self.driver)
-    actions.move_to_element(element).perform()
-    # 4 | mouseOver | linkText=web app |  | 
-    element = self.driver.find_element(By.LINK_TEXT, "web app")
-    actions = ActionChains(self.driver)
-    actions.move_to_element(element).perform()
-    # 5 | runScript | window.scrollTo(0,0) |  | 
+    # 3 | runScript | window.scrollTo(0,0) |  | 
     self.driver.execute_script("window.scrollTo(0,0)")
-    # 6 | click | css=.ThemeableIconButtonPresentation--isEnabled:nth-child(2) > .MiniIcon > path |  | 
+    # 4 | waitForElementVisible | css=.GlobalTopbarStructure | 30000 | 
+    WebDriverWait(self.driver, 30).until(expected_conditions.visibility_of_element_located((By.CSS_SELECTOR, ".GlobalTopbarStructure")))
+    # 5 | assertElementPresent | css=.GlobalTopbarStructure |  | 
+    elements = self.driver.find_elements(By.CSS_SELECTOR, ".GlobalTopbarStructure")
+    assert len(elements) > 0
+    # 6 | waitForElementVisible | css=.LinearSortableList | 30000 | 
+    WebDriverWait(self.driver, 30).until(expected_conditions.visibility_of_element_located((By.CSS_SELECTOR, ".LinearSortableList")))
+    # 7 | click | css=.ThemeableIconButtonPresentation--isEnabled:nth-child(2) > .MiniIcon > path |  | 
     self.driver.find_element(By.CSS_SELECTOR, ".ThemeableIconButtonPresentation--isEnabled:nth-child(2) > .MiniIcon > path").click()
-    # 7 | click | css=.LeftIconItemStructure--isHighlighted > .TypographyPresentation |  | 
+    # 8 | click | css=.LeftIconItemStructure--isHighlighted > .TypographyPresentation |  | 
     self.driver.find_element(By.CSS_SELECTOR, ".LeftIconItemStructure--isHighlighted > .TypographyPresentation").click()
-    # 8 | click | css=.DashedTile--large > .DashedTile-inner |  | 
+    # 9 | click | css=.DashedTile--large > .DashedTile-inner |  | 
     self.driver.find_element(By.CSS_SELECTOR, ".DashedTile--large > .DashedTile-inner").click()
-    # 9 | type | id=new_project_dialog_content_name_input | project2 | 
+    # 10 | type | id=new_project_dialog_content_name_input | project2 | 
     self.driver.find_element(By.ID, "new_project_dialog_content_name_input").send_keys("project2")
-    # 10 | click | css=.PrimaryButton--standardTheme |  | 
+    # 11 | click | css=.PrimaryButton--standardTheme |  | 
     self.driver.find_element(By.CSS_SELECTOR, ".PrimaryButton--standardTheme").click()
-    # 11 | runScript | window.scrollTo(0,0) |  | 
+    # 12 | runScript | window.scrollTo(0,0) |  | 
     self.driver.execute_script("window.scrollTo(0,0)")
+    # 13 | waitForElementVisible | css=.AsanaBaseTopbar | 30000 | 
+    WebDriverWait(self.driver, 30).until(expected_conditions.visibility_of_element_located((By.CSS_SELECTOR, ".AsanaBaseTopbar")))
+    # 14 | assertValue | css=.TextInputBase | project2 | 
+    value = self.driver.find_element(By.CSS_SELECTOR, ".TextInputBase").get_attribute("value")
+    assert value == "project2"
   
   def test_openproject(self):
     # Test name: open project
@@ -70,13 +80,18 @@ class TestAsanawebappsuite():
     self.driver.get("https://app.asana.com/0/home/1205724578603564")
     # 2 | setWindowSize | 1460x921 |  | 
     self.driver.set_window_size(1460, 921)
-    # 3 | click | css=.ContextMenuTarget-contextMenuEventListener:nth-child(1) > .ThemeableInteractiveCardPresentation--isNotSelected > .TypographyPresentation |  | 
-    self.driver.find_element(By.CSS_SELECTOR, ".ContextMenuTarget-contextMenuEventListener:nth-child(1) > .ThemeableInteractiveCardPresentation--isNotSelected > .TypographyPresentation").click()
+    # 3 | click | xpath=//span[contains(.,'project2')] |  | 
+    self.driver.find_element(By.XPATH, "//span[contains(.,\'project2\')]").click()
     # 4 | runScript | window.scrollTo(0,0) |  | 
     self.driver.execute_script("window.scrollTo(0,0)")
-    # 5 | assertElementPresent | css=.AsanaBaseTopbar |  | 
+    # 5 | waitForElementPresent | css=.AsanaBaseTopbar | 30000 | 
+    WebDriverWait(self.driver, 30).until(expected_conditions.presence_of_element_located((By.CSS_SELECTOR, ".AsanaBaseTopbar")))
+    # 6 | assertElementPresent | css=.AsanaBaseTopbar |  | 
     elements = self.driver.find_elements(By.CSS_SELECTOR, ".AsanaBaseTopbar")
     assert len(elements) > 0
+    # 7 | assertValue | css=.TextInputBase | project2 | 
+    value = self.driver.find_element(By.CSS_SELECTOR, ".TextInputBase").get_attribute("value")
+    assert value == "project2"
   
   def test_createtaskinlist(self):
     # Test name: create task in list
@@ -85,20 +100,36 @@ class TestAsanawebappsuite():
     self.driver.get("https://app.asana.com/0/home/1205724578603564")
     # 2 | setWindowSize | 1458x919 |  | 
     self.driver.set_window_size(1458, 919)
-    # 3 | click | css=.ContextMenuTarget-contextMenuEventListener:nth-child(1) > .ThemeableInteractiveCardPresentation--isNotSelected > .TypographyPresentation |  | 
-    self.driver.find_element(By.CSS_SELECTOR, ".ContextMenuTarget-contextMenuEventListener:nth-child(1) > .ThemeableInteractiveCardPresentation--isNotSelected > .TypographyPresentation").click()
-    # 4 | runScript | window.scrollTo(0,0) |  | 
+    # 3 | assertElementPresent | css=.AvatarPhoto-image |  | 
+    elements = self.driver.find_elements(By.CSS_SELECTOR, ".AvatarPhoto-image")
+    assert len(elements) > 0
+    # 4 | waitForElementVisible | css=.LinearSortableList | 30000 | 
+    WebDriverWait(self.driver, 30).until(expected_conditions.visibility_of_element_located((By.CSS_SELECTOR, ".LinearSortableList")))
+    # 5 | click | xpath=//span[contains(.,'project2')] |  | 
+    self.driver.find_element(By.XPATH, "//span[contains(.,\'project2\')]").click()
+    # 6 | runScript | window.scrollTo(0,0) |  | 
     self.driver.execute_script("window.scrollTo(0,0)")
-    # 5 | click | css=.SecondarySplitDropdownMenuButtonA11y-leftButton |  | 
+    # 7 | waitForElementVisible | css=.TopbarPageHeaderStructureWithBreadcrumbs-titleAndBreadcrumbs | 30000 | 
+    WebDriverWait(self.driver, 30).until(expected_conditions.visibility_of_element_located((By.CSS_SELECTOR, ".TopbarPageHeaderStructureWithBreadcrumbs-titleAndBreadcrumbs")))
+    # 8 | assertValue | css=.TextInputBase | project2 | 
+    value = self.driver.find_element(By.CSS_SELECTOR, ".TextInputBase").get_attribute("value")
+    assert value == "project2"
+    # 9 | assertElementPresent | css=.SecondarySplitDropdownMenuButtonA11y-leftButton |  | 
+    elements = self.driver.find_elements(By.CSS_SELECTOR, ".SecondarySplitDropdownMenuButtonA11y-leftButton")
+    assert len(elements) > 0
+    # 10 | click | css=.SecondarySplitDropdownMenuButtonA11y-leftButton |  | 
     self.driver.find_element(By.CSS_SELECTOR, ".SecondarySplitDropdownMenuButtonA11y-leftButton").click()
-    # 6 | click | xpath=//textarea |  | 
+    # 11 | click | xpath=//textarea |  | 
     self.driver.find_element(By.XPATH, "//textarea").click()
-    # 7 | type | xpath=//textarea | some new task | 
+    # 12 | type | xpath=//textarea | some new task | 
     self.driver.find_element(By.XPATH, "//textarea").send_keys("some new task")
-    # 8 | click | css=.PlaceholderAvatar > .CalendarMiniIcon |  | 
+    # 13 | click | css=.PlaceholderAvatar > .CalendarMiniIcon |  | 
     self.driver.find_element(By.CSS_SELECTOR, ".PlaceholderAvatar > .CalendarMiniIcon").click()
-    # 9 | click | xpath=//div[4]/div[5]/span |  | 
+    # 14 | click | xpath=//div[4]/div[5]/span |  | 
     self.driver.find_element(By.XPATH, "//div[4]/div[5]/span").click()
+    # 15 | assertElementPresent | xpath=//main[@id='asana_main_page']/div/div/div/div[2]/div[2]/div/div[2]/div[2]/div/div[2]/div/div/div/div/div/div/div/div[2]/div/div/div/div/div/div |  | 
+    elements = self.driver.find_elements(By.XPATH, "//main[@id=\'asana_main_page\']/div/div/div/div[2]/div[2]/div/div[2]/div[2]/div/div[2]/div/div/div/div/div/div/div/div[2]/div/div/div/div/div/div")
+    assert len(elements) > 0
   
   def test_logout(self):
     # Test name: logout
@@ -107,16 +138,18 @@ class TestAsanawebappsuite():
     self.driver.get("https://app.asana.com/0/home/1205724578603564")
     # 2 | setWindowSize | 1458x920 |  | 
     self.driver.set_window_size(1458, 920)
-    # 3 | assertElementPresent | xpath=//span/div/div |  | 
+    # 3 | waitForElementVisible | css=.HomePageContent-content | 30000 | 
+    WebDriverWait(self.driver, 30).until(expected_conditions.visibility_of_element_located((By.CSS_SELECTOR, ".HomePageContent-content")))
+    # 4 | assertElementPresent | xpath=//span/div/div |  | 
     elements = self.driver.find_elements(By.XPATH, "//span/div/div")
     assert len(elements) > 0
-    # 4 | click | css=.ThemeableRectangularButtonPresentation-leftIcon > .MiniIcon |  | 
+    # 5 | click | css=.ThemeableRectangularButtonPresentation-leftIcon > .MiniIcon |  | 
     self.driver.find_element(By.CSS_SELECTOR, ".ThemeableRectangularButtonPresentation-leftIcon > .MiniIcon").click()
-    # 5 | runScript | window.scrollTo(0,0) |  | 
+    # 6 | runScript | window.scrollTo(0,0) |  | 
     self.driver.execute_script("window.scrollTo(0,0)")
-    # 6 | click | xpath=//span[contains(.,'Log out')] |  | 
+    # 7 | click | xpath=//span[contains(.,'Log out')] |  | 
     self.driver.find_element(By.XPATH, "//span[contains(.,\'Log out\')]").click()
-    # 7 | assertElementPresent | xpath=//span[contains(.,'To get started, please sign in')] |  | 
+    # 8 | assertElementPresent | xpath=//span[contains(.,'To get started, please sign in')] |  | 
     elements = self.driver.find_elements(By.XPATH, "//span[contains(.,\'To get started, please sign in\')]")
     assert len(elements) > 0
   
