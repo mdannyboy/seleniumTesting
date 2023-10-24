@@ -3,6 +3,7 @@ import pytest
 import pytest_html
 import time
 import json
+import undetected_chromedriver as uc
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains
@@ -10,41 +11,55 @@ from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+import pickle
+import ctypes
 
 class TestAsanawebappsuite():
   def setup_method(self, method):
     self.driver = webdriver.Chrome()
+    # options = uc.ChromeOptions()
+    # options.add_argument("--headless")
+    # self.driver = uc.Chrome(options=options)
     self.vars = {}
-  
+
   def teardown_method(self, method):
     self.driver.quit()
   
-  def test_loginwgoogle(self):
+  def test_login(self):
     # Test name: login w/ google
     # Step # | name | target | value
     # 1 | open | /-/login | 
     # Open asana
     self.driver.get("https://app.asana.com/-/login")
+
     # 3 | waitForElementPresent | css=.ThemeableRectangularButtonPresentation--xlarge | 3000
     # Wait for Google login button
     WebDriverWait(self.driver, 3).until(expected_conditions.presence_of_element_located((By.CSS_SELECTOR, ".ThemeableRectangularButtonPresentation--xlarge")))
     # 4 | click | css=.ThemeableRectangularButtonPresentation--xlarge | 
     # click google login button
-    self.driver.find_element(By.CSS_SELECTOR, ".ThemeableRectangularButtonPresentation--xlarge").click()
+    # self.driver.find_element(By.CSS_SELECTOR, ".ThemeableRectangularButtonPresentation--xlarge").click()
     # 5 | waitForElementPresent | xpath=//h1[contains(.,'Choose an account')] | 3000
     # Wait for choose account screen
-    WebDriverWait(self.driver, 3).until(expected_conditions.presence_of_element_located((By.XPATH, "//h1[contains(.,\'Choose an account\')]")))
+    # WebDriverWait(self.driver, 3).until(expected_conditions.presence_of_element_located((By.XPATH, "//h1[contains(.,\'Choose an account\')]")))
     # 6 | click | xpath=//div[@id='view_container']/div/div/div[2]/div/div/div/form/span/section/div/div/div/div/ul/li/div/div/div/div[2]/div | 
     # click account to login
-    self.driver.find_element(By.XPATH, "//div[@id=\'view_container\']/div/div/div[2]/div/div/div/form/span/section/div/div/div/div/ul/li/div/div/div/div[2]/div").click()
-    # 7 | pause | asdf | 5000
+    # self.driver.find_element(By.XPATH, "//div[@id=\'view_container\']/div/div/div[2]/div/div/div/form/span/section/div/div/div/div/ul/li/div/div/div/div[2]/div").click()
+
+    # pop up to tell user to login
+    ctypes.windll.user32.MessageBoxW(0,"Please enter credentials to continue","Login",48)
+    # 7 | pause |  | 5000
     # pause to allow page to load
     time.sleep(5)
     # 8 | waitForElementVisible | css=.GlobalTopbarStructure | 30000
     # wait for asana home page to show
-    WebDriverWait(self.driver, 30).until(expected_conditions.visibility_of_element_located((By.CSS_SELECTOR, ".GlobalTopbarStructure")))
+    WebDriverWait(self.driver, 100).until(expected_conditions.visibility_of_element_located((By.CSS_SELECTOR, ".GlobalTopbarStructure")))
+
+    # save cookies?
+    pickle.dump(self.driver.get_cookies(),open("cookies.pkl","wb"))
+
     # 9 | assertElementPresent | xpath=//span/div/div | 
     # assert user profile icon present
+    WebDriverWait(self.driver, 100).until(expected_conditions.visibility_of_element_located((By.XPATH, "//span/div/div")))
     elements = self.driver.find_elements(By.XPATH, "//span/div/div")
     assert len(elements) > 0
   
@@ -54,6 +69,12 @@ class TestAsanawebappsuite():
     # 1 | open | https://app.asana.com | 
     # Open Asana site
     self.driver.get("https://app.asana.com")
+
+    # load cookies and login??
+    cookies = pickle.load(open("cookies.pkl","rb"))
+    for cookie in cookies:
+      self.driver.add_cookie(cookie)
+
     # 3 | runScript | window.scrollTo(0,0) | 
     self.driver.execute_script("window.scrollTo(0,0)")
     # 4 | waitForElementVisible | css=.GlobalTopbarStructure | 30000
@@ -81,6 +102,7 @@ class TestAsanawebappsuite():
     self.driver.find_element(By.CSS_SELECTOR, ".DashedTile--large > .DashedTile-inner").click()
     # 11 | type | id=new_project_dialog_content_name_input | project2
     # enter project name 'project2'
+    WebDriverWait(self.driver, 30).until(expected_conditions.visibility_of_element_located((By.ID, "new_project_dialog_content_name_input")))
     self.driver.find_element(By.ID, "new_project_dialog_content_name_input").send_keys("project2")
     # 12 | click | css=.PrimaryButton--standardTheme | 
     # click "create project" button
@@ -101,6 +123,12 @@ class TestAsanawebappsuite():
     # 1 | open | /0/home/1205724578603564 | 
     # open asana site
     self.driver.get("https://app.asana.com/0/home/1205724578603564")
+
+    # load cookies and login??
+    cookies = pickle.load(open("cookies.pkl","rb"))
+    for cookie in cookies:
+      self.driver.add_cookie(cookie)
+
     # 2 | setWindowSize | 1460x921 | 
     self.driver.set_window_size(1460, 921)
     # 3 | waitForElementVisible | css=.LinearSortableList | 30000
@@ -133,10 +161,17 @@ class TestAsanawebappsuite():
     # 1 | open | /0/home/1205724578603564 | 
     # open Asana site
     self.driver.get("https://app.asana.com/0/home/1205724578603564")
+
+    # load cookies and login??
+    cookies = pickle.load(open("cookies.pkl","rb"))
+    for cookie in cookies:
+      self.driver.add_cookie(cookie)
+
     # 2 | setWindowSize | 1458x919 | 
     self.driver.set_window_size(1458, 919)
     # 3 | assertElementPresent | css=.AvatarPhoto-image | 
     # ensure profile image is present
+    WebDriverWait(self.driver, 30).until(expected_conditions.presence_of_element_located((By.CSS_SELECTOR, ".AvatarPhoto-image")))
     elements = self.driver.find_elements(By.CSS_SELECTOR, ".AvatarPhoto-image")
     assert len(elements) > 0
     # 4 | waitForElementVisible | css=.LinearSortableList | 30000
@@ -184,6 +219,12 @@ class TestAsanawebappsuite():
     # 1 | open | /0/home/1205724578603564 | 
     # open asana site
     self.driver.get("https://app.asana.com/0/home/1205724578603564")
+
+    # load cookies and login??
+    cookies = pickle.load(open("cookies.pkl","rb"))
+    for cookie in cookies:
+      self.driver.add_cookie(cookie)
+
     # 2 | setWindowSize | 1458x920 | 
     self.driver.set_window_size(1458, 920)
     # 3 | waitForElementVisible | css=.LinearSortableList | 30000
@@ -218,3 +259,7 @@ class TestAsanawebappsuite():
     elements = self.driver.find_elements(By.XPATH, "//span[contains(.,\'To get started, please sign in\')]")
     assert len(elements) > 0
   
+# mytester = TestAsanawebappsuite()
+# mytester.setup_method("")
+# mytester.test_login()
+# mytester.test_createproject()

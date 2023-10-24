@@ -3,5 +3,8 @@ automated testing with selenium example, for CSE 5325 2023 FA
 
 Required packages:
     Selenium
+    pytest
+    pytest-html
+    pickle, for cookies to try to save login state
+    ctypes, simple popup dialog
 
-Install with `pip install Selenium`
