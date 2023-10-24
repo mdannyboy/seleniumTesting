@@ -8,3 +8,6 @@ Required packages:
     pickle, for cookies to try to save login state
     ctypes, simple popup dialog
 
+On Windows run with `pt.test.exe -v --html=report.html`
+View the results in report.html
+
